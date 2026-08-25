@@ -10,6 +10,7 @@ phases:
       - echo "Resolving dependencies..."
       - mvn -B dependency:go-offline
 
+
   build:
     commands:
       - echo "Running mvn package..."
