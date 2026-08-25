@@ -4,23 +4,26 @@ phases:
   install:
     runtime-versions:
       java: corretto17
+
   pre_build:
     commands:
       - echo "Resolving dependencies..."
       - mvn -B dependency:go-offline
+
   build:
     commands:
       - echo "Running mvn package..."
       - mvn -B clean package -DskipTests
-      - # normalize the jar name so appspec.yml doesn't need a wildcard
-      - cp target/*.jar target/app.jar
+      - echo "Checking target directory..."
+      - ls -lah target/
+
   post_build:
     commands:
       - echo "Build finished on $(date)"
 
 artifacts:
   files:
-    - target/app.jar
+    - target/*.jar
     - appspec.yml
-    - scripts/*/
+    - scripts/**/*
   discard-paths: no
