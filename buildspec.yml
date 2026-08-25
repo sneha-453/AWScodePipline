@@ -1,17 +1,26 @@
 version: 0.2
 
 phases:
+  install:
+    runtime-versions:
+      java: corretto17
   pre_build:
     commands:
-    - echo "Pre-Build Phase"
+      - echo "Resolving dependencies..."
+      - mvn -B dependency:go-offline
   build:
     commands:
-      - echo "Build Phase Started"
-      - mvn clean package
+      - echo "Running mvn package..."
+      - mvn -B clean package -DskipTests
+      - # normalize the jar name so appspec.yml doesn't need a wildcard
+      - cp target/*.jar target/app.jar
   post_build:
     commands:
-      - echo "Build Succeded"
+      - echo "Build finished on $(date)"
+
 artifacts:
   files:
-    - target/aws-ci-cd*/*
-  discard-paths: yes
+    - target/app.jar
+    - appspec.yml
+    - scripts/*/
+  discard-paths: no
